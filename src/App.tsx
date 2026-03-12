@@ -5,8 +5,11 @@ import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@c
 // Initialize the Gemini AI
 const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
-// Your specific Clerk Publishable Key:
+// Your specific Clerk Publishable Key
 const PUBLISHABLE_KEY = "pk_test_YWNjdXJhdGUtbGFkeWJ1Zy03NC5jbGVyay5hY2NvdW50cy5kZXYk";
+
+// 💰 Your Stripe Checkout Link
+const STRIPE_LINK = "https://buy.stripe.com/test_00w00b0X8bOdesw1S78AE00";
 
 export default function App() {
   const [companyKnowledge, setCompanyKnowledge] = useState('');
@@ -18,6 +21,19 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
+    
+    // --- PHASE 2: THE CASH REGISTER ---
+    // For this test, we are pretending the user does not have an active subscription yet!
+    // When you want to use the AI yourself, just change this false to true.
+    const hasPaid = false; 
+
+    if (!hasPaid) {
+      // If they haven't paid, send them straight to Stripe!
+      window.location.href = STRIPE_LINK;
+      return;
+    }
+    // -----------------------------------
+
     if (!emailThread) return alert("Please paste an email thread first!");
     setIsGenerating(true);
     setGeneratedReply('');
@@ -53,12 +69,17 @@ export default function App() {
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-8">
           <h1 className="text-2xl font-extrabold text-slate-900">ReadyReply AI</h1>
           <SignedIn>
-            {/* This shows the user's profile picture when logged in */}
-            <UserButton afterSignOutUrl="/" />
+            <div className="flex items-center gap-4">
+               {/* Upgrade Button in the header just in case! */}
+               <a href={STRIPE_LINK} className="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg">
+                 Upgrade to Pro
+               </a>
+              <UserButton afterSignOutUrl="/" />
+            </div>
           </SignedIn>
         </div>
 
-        {/* ❌ What users see when NOT logged in (The Marketing Page) */}
+        {/* Marketing Page (Logged Out) */}
         <SignedOut>
           <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
             <h1 className="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
@@ -75,7 +96,7 @@ export default function App() {
           </div>
         </SignedOut>
 
-        {/* ✅ What users see WHEN logged in (The Actual App) */}
+        {/* App Dashboard (Logged In) */}
         <SignedIn>
           <div className="max-w-3xl mx-auto space-y-8 px-4 pb-12">
             <div className="text-center">
@@ -85,7 +106,6 @@ export default function App() {
 
             <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-6 md:p-8 space-y-8">
               
-              {/* Settings */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-slate-800 flex items-center">
                   <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">1</span>
@@ -103,7 +123,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Goal & Tone */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-slate-800 flex items-center">
                   <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">2</span>
@@ -119,7 +138,6 @@ export default function App() {
                 </div>
               </div>
 
-              {/* Email Context */}
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-slate-800 flex items-center">
                   <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">3</span>
@@ -128,8 +146,8 @@ export default function App() {
                 <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-4 border focus:ring-blue-500" rows={5} placeholder="Paste the email chain here..." value={emailThread} onChange={(e) => setEmailThread(e.target.value)} />
               </div>
 
-              <button onClick={handleGenerate} disabled={isGenerating} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all disabled:opacity-50 text-lg">
-                {isGenerating ? 'Drafting...' : 'Generate Perfect Reply'}
+              <button onClick={handleGenerate} disabled={isGenerating} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all disabled:opacity-50 text-lg flex items-center justify-center gap-2">
+                🔒 Generate Perfect Reply
               </button>
 
               {generatedReply && (
