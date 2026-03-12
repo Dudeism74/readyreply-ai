@@ -8,7 +8,7 @@ import { GoogleGenAI } from '@google/genai';
 import { Send, Copy, CheckCircle2, Loader2, Sparkles } from 'lucide-react';
 
 // Initialize the Gemini API client
-const ai = new GoogleGenAI({ apiKey: process.env.GEMINI_API_KEY });
+const ai = new GoogleGenAI({ apiKey: import.meta.env.VITE_GEMINI_API_KEY });
 
 // Define the available tones for the reply
 const TONES = [
