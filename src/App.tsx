@@ -21,7 +21,7 @@ export default function App() {
     setGeneratedReply('');
 
     try {
-      const model = ai.getGenerativeModel({ model: 'gemini-1.5-flash' });
+      const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
       
       // This is the "Mega-Prompt" that combines all the new features to create massive value
       const prompt = `
