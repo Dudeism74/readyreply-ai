@@ -33,10 +33,11 @@ export default function App() {
         BRAND VOICE & WRITING STYLE:
         ${brandVoice ? brandVoice : 'Write in a clear, polite, and standard professional tone.'}
 
-        TASK:
+       TASK:
         Write a response to the following email thread. 
         Goal of the response: ${goal}
         Desired Tone: ${tone}
+        CRITICAL INSTRUCTION: Analyze the email thread to find the customer's name. Always address them by their name in the greeting (e.g., "Hi [Name],"). If absolutely no name can be found, use a polite, professional greeting.
 
         EMAIL THREAD:
         ${emailThread}
