@@ -5,8 +5,8 @@ import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@c
 // Initialize the Gemini AI
 const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
-// Paste your Clerk Publishable Key here:
-const PUBLISHABLE_KEY ="pk_test_YWNjdXJhdGUtbGFkeWJ1Zy03NC5jbGVyay5hY2NvdW50cy5kZXYk";
+// Your specific Clerk Publishable Key:
+const PUBLISHABLE_KEY = "pk_test_YWNjdXJhdGUtbGFkeWJ1Zy03NC5jbGVyay5hY2NvdW50cy5kZXYk";
 
 export default function App() {
   const [companyKnowledge, setCompanyKnowledge] = useState('');
