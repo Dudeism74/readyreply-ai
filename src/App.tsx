@@ -162,6 +162,10 @@ export default function App() {
             </div>
           </div>
         </SignedIn>
+        {/* Simple Footer */}
+<div className="text-center py-8 text-slate-500 text-sm">
+  <p>© 2026 ReadyReply AI. All rights reserved. | <a href="/privacy" className="hover:text-blue-600 underline">Privacy Policy</a></p>
+</div>
       </div>
     </ClerkProvider>
   );
