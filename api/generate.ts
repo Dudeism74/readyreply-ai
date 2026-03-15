@@ -1,4 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
+import { verifyToken } from "@clerk/backend";
 import type { Request, Response } from "express";
 
 export default async function handler(req: Request, res: Response) {
@@ -8,7 +9,7 @@ export default async function handler(req: Request, res: Response) {
   res.setHeader("Access-Control-Allow-Methods", "GET,OPTIONS,PATCH,DELETE,POST,PUT");
   res.setHeader(
     "Access-Control-Allow-Headers",
-    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version"
+    "X-CSRF-Token, X-Requested-With, Accept, Accept-Version, Content-Length, Content-MD5, Content-Type, Date, X-Api-Version, Authorization"
   );
 
   // Handle preflight CORS request
@@ -22,6 +23,21 @@ export default async function handler(req: Request, res: Response) {
   }
 
   try {
+    const authHeader = req.headers.authorization as string | undefined;
+    const token = authHeader?.replace('Bearer ', '') || authHeader?.replace('bearer ', '');
+
+    if (!token) {
+      return res.status(401).json({ error: "Unauthorized. Please log in to readyreplyai.com to use the extension." });
+    }
+
+    try {
+      await verifyToken(token, {
+        secretKey: process.env.CLERK_SECRET_KEY,
+      });
+    } catch (error) {
+      return res.status(401).json({ error: "Unauthorized. Please log in to readyreplyai.com to use the extension." });
+    }
+
     const { emailText } = req.body;
 
     if (!emailText) {
