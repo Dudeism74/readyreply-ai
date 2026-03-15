@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { ClerkProvider } from '@clerk/chrome-extension';
-import { Show, SignInButton, UserButton } from '@clerk/react';
+import { ClerkProvider, Show, SignInButton, UserButton } from '@clerk/react';
 
 const PUBLISHABLE_KEY = "pk_live_Y2xlcmsucmVhZHlyZXBseWFpLmNvbSQ";
 const STRIPE_LINK = "https://buy.stripe.com/6oU4gr6iR3QVaSe1Rg1B600";
