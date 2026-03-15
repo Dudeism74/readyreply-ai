@@ -6,10 +6,10 @@ import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@c
 const ai = new GoogleGenerativeAI(import.meta.env.VITE_GEMINI_API_KEY);
 
 // Your specific Clerk Publishable Key
-const PUBLISHABLE_KEY = "pk_test_YWNjdXJhdGUtbGFkeWJ1Zy03NC5jbGVyay5hY2NvdW50cy5kZXYk";
+const PUBLISHABLE_KEY = "pk_live_Y2xlcmsucmVhZHlyZXBseWFpLmNvbSQ";
 
 // 💰 Your Stripe Checkout Link
-const STRIPE_LINK = "https://buy.stripe.com/test_00w00b0X8bOdesw1S78AE00";
+const STRIPE_LINK = "https://buy.stripe.com/6oU4gr6iR3QVaSe1Rg1B600";
 
 export default function App() {
   const [companyKnowledge, setCompanyKnowledge] = useState('');
@@ -21,11 +21,11 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
-    
+
     // --- PHASE 2: THE CASH REGISTER ---
     // For this test, we are pretending the user does not have an active subscription yet!
     // When you want to use the AI yourself, just change this false to true.
-    const hasPaid = false; 
+    const hasPaid = false;
 
     if (!hasPaid) {
       // If they haven't paid, send them straight to Stripe!
@@ -64,16 +64,16 @@ export default function App() {
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
       <div className="min-h-screen bg-slate-50">
-        
+
         {/* Navigation Bar */}
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-8">
           <h1 className="text-2xl font-extrabold text-slate-900">ReadyReply AI</h1>
           <SignedIn>
             <div className="flex items-center gap-4">
-               {/* Upgrade Button in the header just in case! */}
-               <a href={STRIPE_LINK} className="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg">
-                 Upgrade to Pro
-               </a>
+              {/* Upgrade Button in the header just in case! */}
+              <a href={STRIPE_LINK} className="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg">
+                Upgrade to Pro
+              </a>
               <UserButton afterSignOutUrl="/" />
             </div>
           </SignedIn>
@@ -105,7 +105,7 @@ export default function App() {
             </div>
 
             <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-6 md:p-8 space-y-8">
-              
+
               <div className="space-y-4">
                 <h2 className="text-xl font-semibold text-slate-800 flex items-center">
                   <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">1</span>
@@ -163,9 +163,9 @@ export default function App() {
           </div>
         </SignedIn>
         {/* Simple Footer */}
-<div className="text-center py-8 text-slate-500 text-sm">
-  <p>© 2026 ReadyReply AI. All rights reserved. | <a href="/privacy" className="hover:text-blue-600 underline">Privacy Policy</a></p>
-</div>
+        <div className="text-center py-8 text-slate-500 text-sm">
+          <p>© 2026 ReadyReply AI. All rights reserved. | <a href="/privacy" className="hover:text-blue-600 underline">Privacy Policy</a></p>
+        </div>
       </div>
     </ClerkProvider>
   );
