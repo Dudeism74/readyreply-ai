@@ -35,6 +35,8 @@ export default async function handler(req: Request, res: Response) {
         secretKey: process.env.CLERK_SECRET_KEY,
       });
     } catch (error) {
+      // Add this console.error so we can see exactly why Clerk is mad!
+      console.error("Clerk Token Verification Failed:", error);
       return res.status(401).json({ error: "Unauthorized. Please log in to readyreplyai.com to use the extension." });
     }
 
@@ -51,7 +53,7 @@ export default async function handler(req: Request, res: Response) {
     }
 
     const genAI = new GoogleGenerativeAI(apiKey);
-    
+
     // Use gemini-2.5-flash with system instruction
     const model = genAI.getGenerativeModel({
       model: "gemini-2.5-flash",
