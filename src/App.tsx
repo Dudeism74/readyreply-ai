@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { ClerkProvider, SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
+import { ClerkProvider, Show, SignInButton, UserButton } from '@clerk/chrome-extension';
 
 // Initialize the Gemini AI
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
@@ -25,7 +25,7 @@ export default function App() {
     // --- PHASE 2: THE CASH REGISTER ---
     // For this test, we are pretending the user does not have an active subscription yet!
     // When you want to use the AI yourself, just change this false to true.
-    const hasPaid = false;
+    const hasPaid = true;
 
     if (!hasPaid) {
       // If they haven't paid, send them straight to Stripe!
@@ -68,19 +68,28 @@ export default function App() {
         {/* Navigation Bar */}
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-8">
           <h1 className="text-2xl font-extrabold text-slate-900">ReadyReply AI</h1>
-          <SignedIn>
-            <div className="flex items-center gap-4">
-              {/* Upgrade Button in the header just in case! */}
+          <div className="flex items-center gap-4">
+            {/* Shows a Sign In button in the top right when NOT logged in */}
+            <Show when="signed-out">
+              <SignInButton mode="modal">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
+                  Sign In
+                </button>
+              </SignInButton>
+            </Show>
+
+            {/* Shows the Google Profile Icon AND Upgrade button when IS logged in */}
+            <Show when="signed-in">
               <a href={STRIPE_LINK} className="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg">
                 Upgrade to Pro
               </a>
               <UserButton afterSignOutUrl="/" />
-            </div>
-          </SignedIn>
+            </Show>
+          </div>
         </div>
 
         {/* Marketing Page (Logged Out) */}
-        <SignedOut>
+        <Show when="signed-out">
           <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
             <h1 className="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
               Write Perfect Emails in <span className="text-blue-600">Seconds</span>
@@ -94,10 +103,10 @@ export default function App() {
               </button>
             </SignInButton>
           </div>
-        </SignedOut>
+        </Show>
 
         {/* App Dashboard (Logged In) */}
-        <SignedIn>
+        <Show when="signed-in">
           <div className="max-w-3xl mx-auto space-y-8 px-4 pb-12">
             <div className="text-center">
               <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">ReadyReply AI <span className="text-blue-600">Pro</span></h2>
@@ -161,8 +170,8 @@ export default function App() {
               )}
             </div>
           </div>
-        </SignedIn>
-        <SignedOut>
+        </Show>
+        <Show when="signed-out">
           <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
             <h2 className="text-3xl font-bold text-slate-800 mb-4">Welcome to ReadyReply AI</h2>
             <p className="text-lg text-slate-600 mb-8 max-w-2xl">
@@ -174,7 +183,7 @@ export default function App() {
               </button>
             </SignInButton>
           </div>
-        </SignedOut>
+        </Show>
 
         {/* Simple Footer */}
         <div className="text-center py-8 text-slate-500 text-sm">
