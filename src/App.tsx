@@ -1,15 +1,10 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
+// Split imports: Provider from the extension package, UI from the react package
 import { ClerkProvider } from '@clerk/chrome-extension';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
-// Initialize the Gemini AI
-const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
-
-// Your specific Clerk Publishable Key
 const PUBLISHABLE_KEY = "pk_live_Y2xlcmsucmVhZHlyZXBseWFpLmNvbSQ";
-
-// 💰 Your Stripe Checkout Link
 const STRIPE_LINK = "https://buy.stripe.com/6oU4gr6iR3QVaSe1Rg1B600";
 
 export default function App() {
@@ -22,22 +17,25 @@ export default function App() {
   const [isGenerating, setIsGenerating] = useState(false);
 
   const handleGenerate = async () => {
-
-    // --- PHASE 2: THE CASH REGISTER ---
-    // For this test, we are pretending the user does not have an active subscription yet!
-    // When you want to use the AI yourself, just change this false to true.
     const hasPaid = true;
-
     if (!hasPaid) {
       window.location.href = STRIPE_LINK;
       return;
     }
-    // -----------------------------------
 
     if (!emailThread) return alert("Please paste an email thread first!");
     setIsGenerating(true);
     setGeneratedReply('');
+
     try {
+      const apiKey = process.env.GEMINI_API_KEY as string;
+      if (!apiKey) {
+        setGeneratedReply('Error: GEMINI_API_KEY is missing from your local environment.');
+        setIsGenerating(false);
+        return;
+      }
+
+      const ai = new GoogleGenerativeAI(apiKey);
       const model = ai.getGenerativeModel({ model: 'gemini-2.5-flash' });
       const prompt = `
         You are an elite, highly-paid communication and customer support assistant. 
@@ -63,8 +61,7 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      {/* Added w-[400px] here to force the Chrome popup to be wide! */}
-      <div className="min-h-screen bg-slate-50 w-[400px]">
+      <div className="bg-slate-50 w-[400px] min-h-[550px] flex flex-col">
 
         {/* Navigation Bar */}
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-4">
@@ -89,7 +86,7 @@ export default function App() {
 
         {/* Marketing Page (Logged Out) */}
         <SignedOut>
-          <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+          <div className="flex flex-col items-center justify-center px-6 py-12 text-center flex-grow">
             <h1 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">
               Write Perfect Emails in <span className="text-blue-600">Seconds</span>
             </h1>
@@ -106,7 +103,7 @@ export default function App() {
 
         {/* App Dashboard (Logged In) */}
         <SignedIn>
-          <div className="px-4 pb-6 space-y-6">
+          <div className="px-4 pb-6 space-y-6 flex-grow">
             <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-4 space-y-4">
 
               <div className="space-y-2">
@@ -150,7 +147,7 @@ export default function App() {
         </SignedIn>
 
         {/* Simple Footer */}
-        <div className="text-center pb-4 text-slate-500 text-xs">
+        <div className="text-center pb-4 pt-2 text-slate-500 text-xs">
           <p>© 2026 ReadyReply AI.</p>
         </div>
       </div>
