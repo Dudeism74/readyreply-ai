@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import { ClerkProvider } from '@clerk/chrome-extension';
-import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
+import { Show, SignInButton, UserButton } from '@clerk/react';
 
 const PUBLISHABLE_KEY = "pk_live_Y2xlcmsucmVhZHlyZXBseWFpLmNvbSQ";
 const STRIPE_LINK = "https://buy.stripe.com/6oU4gr6iR3QVaSe1Rg1B600";
@@ -27,9 +27,9 @@ export default function App() {
     setGeneratedReply('');
 
     try {
-      const apiKey = (import.meta.env.VITE_GEMINI_API_KEY || '') as string;
-      if (!apiKey) {
-        setGeneratedReply('Error: GEMINI_API_KEY is missing from your local environment.');
+      const apiKey = process.env.GEMINI_API_KEY;
+      if (!apiKey || apiKey === 'undefined') {
+        setGeneratedReply('Error: GEMINI_API_KEY is missing. Add it to your hosting environment variables.');
         setIsGenerating(false);
         return;
       }
@@ -60,31 +60,29 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <div className="bg-slate-50 w-[400px] min-h-[550px] flex flex-col">
+      <div className="bg-slate-50 w-full md:w-[400px] min-h-[550px] mx-auto flex flex-col shadow-xl">
 
-        {/* Navigation Bar */}
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-4">
           <h1 className="text-xl font-extrabold text-slate-900">ReadyReply AI</h1>
           <div className="flex items-center gap-4">
-            <SignedOut>
+            <Show when="signed-out">
               <SignInButton mode="modal">
                 <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                   Sign In
                 </button>
               </SignInButton>
-            </SignedOut>
+            </Show>
 
-            <SignedIn>
+            <Show when="signed-in">
               <a href={STRIPE_LINK} target="_blank" rel="noreferrer" className="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg">
                 Upgrade
               </a>
               <UserButton afterSignOutUrl="/" />
-            </SignedIn>
+            </Show>
           </div>
         </div>
 
-        {/* Marketing Page (Logged Out) */}
-        <SignedOut>
+        <Show when="signed-out">
           <div className="flex flex-col items-center justify-center px-6 py-12 text-center flex-grow">
             <h1 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">
               Write Perfect Emails in <span className="text-blue-600">Seconds</span>
@@ -98,10 +96,9 @@ export default function App() {
               </button>
             </SignInButton>
           </div>
-        </SignedOut>
+        </Show>
 
-        {/* App Dashboard (Logged In) */}
-        <SignedIn>
+        <Show when="signed-in">
           <div className="px-4 pb-6 space-y-6 flex-grow">
             <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-4 space-y-4">
 
@@ -143,9 +140,8 @@ export default function App() {
               )}
             </div>
           </div>
-        </SignedIn>
+        </Show>
 
-        {/* Simple Footer */}
         <div className="text-center pb-4 pt-2 text-slate-500 text-xs">
           <p>© 2026 ReadyReply AI.</p>
         </div>
