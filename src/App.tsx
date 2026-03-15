@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-import { ClerkProvider, Show, SignInButton, UserButton } from '@clerk/chrome-extension';
+import { ClerkProvider } from '@clerk/chrome-extension';
+import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
 // Initialize the Gemini AI
 const ai = new GoogleGenerativeAI(process.env.GEMINI_API_KEY as string);
@@ -28,7 +29,6 @@ export default function App() {
     const hasPaid = true;
 
     if (!hasPaid) {
-      // If they haven't paid, send them straight to Stripe!
       window.location.href = STRIPE_LINK;
       return;
     }
@@ -63,131 +63,95 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <div className="min-h-screen bg-slate-50">
+      {/* Added w-[400px] here to force the Chrome popup to be wide! */}
+      <div className="min-h-screen bg-slate-50 w-[400px]">
 
         {/* Navigation Bar */}
-        <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-8">
-          <h1 className="text-2xl font-extrabold text-slate-900">ReadyReply AI</h1>
+        <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-4">
+          <h1 className="text-xl font-extrabold text-slate-900">ReadyReply AI</h1>
           <div className="flex items-center gap-4">
-            {/* Shows a Sign In button in the top right when NOT logged in */}
-            <Show when="signed-out">
+            <SignedOut>
               <SignInButton mode="modal">
-                <button className="bg-blue-600 hover:bg-blue-700 text-white px-5 py-2 rounded-lg text-sm font-semibold transition">
+                <button className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-semibold transition">
                   Sign In
                 </button>
               </SignInButton>
-            </Show>
+            </SignedOut>
 
-            {/* Shows the Google Profile Icon AND Upgrade button when IS logged in */}
-            <Show when="signed-in">
-              <a href={STRIPE_LINK} className="text-sm font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-4 py-2 rounded-lg">
-                Upgrade to Pro
+            <SignedIn>
+              <a href={STRIPE_LINK} target="_blank" rel="noreferrer" className="text-xs font-semibold text-blue-600 hover:text-blue-800 bg-blue-50 px-3 py-1.5 rounded-lg">
+                Upgrade
               </a>
               <UserButton afterSignOutUrl="/" />
-            </Show>
+            </SignedIn>
           </div>
         </div>
 
         {/* Marketing Page (Logged Out) */}
-        <Show when="signed-out">
-          <div className="flex flex-col items-center justify-center min-h-[70vh] px-4 text-center">
-            <h1 className="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
+        <SignedOut>
+          <div className="flex flex-col items-center justify-center px-6 py-12 text-center">
+            <h1 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">
               Write Perfect Emails in <span className="text-blue-600">Seconds</span>
             </h1>
-            <p className="text-xl text-slate-600 mb-8 max-w-2xl">
+            <p className="text-sm text-slate-600 mb-6">
               Stop wasting time on difficult emails. Our AI copilot learns your business rules and brand voice to draft the perfect response instantly.
             </p>
             <SignInButton mode="modal">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg text-lg transition-all">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg text-md transition-all">
                 Start 7-Day Free Trial
               </button>
             </SignInButton>
           </div>
-        </Show>
+        </SignedOut>
 
         {/* App Dashboard (Logged In) */}
-        <Show when="signed-in">
-          <div className="max-w-3xl mx-auto space-y-8 px-4 pb-12">
-            <div className="text-center">
-              <h2 className="text-3xl font-extrabold text-slate-900 tracking-tight">ReadyReply AI <span className="text-blue-600">Pro</span></h2>
-              <p className="mt-2 text-slate-600">Welcome back! Let's clear out that inbox.</p>
-            </div>
+        <SignedIn>
+          <div className="px-4 pb-6 space-y-6">
+            <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-4 space-y-4">
 
-            <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-6 md:p-8 space-y-8">
-
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-slate-800 flex items-center">
-                  <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">1</span>
-                  System Settings
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Company Knowledge</label>
-                    <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-3 border focus:ring-blue-500" rows={3} value={companyKnowledge} onChange={(e) => setCompanyKnowledge(e.target.value)} />
-                  </div>
-                  <div>
-                    <label className="block text-sm font-medium text-slate-700 mb-1">Brand Voice</label>
-                    <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-3 border focus:ring-blue-500" rows={3} value={brandVoice} onChange={(e) => setBrandVoice(e.target.value)} />
-                  </div>
-                </div>
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-slate-700">Company Knowledge</label>
+                <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-2 border focus:ring-blue-500 text-sm" rows={2} value={companyKnowledge} onChange={(e) => setCompanyKnowledge(e.target.value)} />
+              </div>
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-slate-700">Brand Voice</label>
+                <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-2 border focus:ring-blue-500 text-sm" rows={2} value={brandVoice} onChange={(e) => setBrandVoice(e.target.value)} />
               </div>
 
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-slate-800 flex items-center">
-                  <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">2</span>
-                  Goal & Tone
-                </h2>
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                  <select className="w-full border-slate-300 rounded-lg shadow-sm p-3 border focus:ring-blue-500" value={goal} onChange={(e) => setGoal(e.target.value)}>
-                    <option>Resolve Customer Issue</option><option>Politely Decline</option><option>Follow Up on Pitch</option>
-                  </select>
-                  <select className="w-full border-slate-300 rounded-lg shadow-sm p-3 border focus:ring-blue-500" value={tone} onChange={(e) => setTone(e.target.value)}>
-                    <option>Professional</option><option>Friendly & Warm</option><option>Firm & Direct</option><option>Apologetic</option>
-                  </select>
-                </div>
+              <div className="grid grid-cols-2 gap-2">
+                <select className="w-full border-slate-300 rounded-lg shadow-sm p-2 border focus:ring-blue-500 text-sm" value={goal} onChange={(e) => setGoal(e.target.value)}>
+                  <option>Resolve Customer Issue</option><option>Politely Decline</option><option>Follow Up on Pitch</option>
+                </select>
+                <select className="w-full border-slate-300 rounded-lg shadow-sm p-2 border focus:ring-blue-500 text-sm" value={tone} onChange={(e) => setTone(e.target.value)}>
+                  <option>Professional</option><option>Friendly & Warm</option><option>Firm & Direct</option><option>Apologetic</option>
+                </select>
               </div>
 
-              <div className="space-y-4">
-                <h2 className="text-xl font-semibold text-slate-800 flex items-center">
-                  <span className="bg-blue-100 text-blue-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">3</span>
-                  Context
-                </h2>
-                <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-4 border focus:ring-blue-500" rows={5} placeholder="Paste the email chain here..." value={emailThread} onChange={(e) => setEmailThread(e.target.value)} />
+              <div className="space-y-2">
+                <label className="block text-xs font-medium text-slate-700">Context (Email Thread)</label>
+                <textarea className="w-full border-slate-300 rounded-lg shadow-sm p-2 border focus:ring-blue-500 text-sm" rows={4} placeholder="Paste the email chain here..." value={emailThread} onChange={(e) => setEmailThread(e.target.value)} />
               </div>
 
-              <button onClick={handleGenerate} disabled={isGenerating} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg transition-all disabled:opacity-50 text-lg flex items-center justify-center gap-2">
+              <button onClick={handleGenerate} disabled={isGenerating} className="w-full bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-4 rounded-xl shadow-lg transition-all disabled:opacity-50 text-sm flex items-center justify-center gap-2">
                 🔒 Generate Perfect Reply
               </button>
 
               {generatedReply && (
-                <div className="mt-8 space-y-4 border-t pt-8">
-                  <h2 className="text-xl font-semibold text-slate-800 flex items-center">
-                    <span className="bg-green-100 text-green-700 text-sm font-bold w-6 h-6 rounded-full flex items-center justify-center mr-3">✓</span>
+                <div className="mt-4 space-y-2 border-t pt-4">
+                  <h2 className="text-sm font-semibold text-slate-800 flex items-center">
+                    <span className="bg-green-100 text-green-700 text-xs font-bold w-5 h-5 rounded-full flex items-center justify-center mr-2">✓</span>
                     Your Drafted Reply
                   </h2>
-                  <div className="bg-slate-50 border border-slate-200 rounded-xl p-6 text-slate-800 whitespace-pre-wrap">{generatedReply}</div>
+                  <div className="bg-slate-50 border border-slate-200 rounded-lg p-3 text-slate-800 text-sm whitespace-pre-wrap">{generatedReply}</div>
                 </div>
               )}
             </div>
           </div>
-        </Show>
-        <Show when="signed-out">
-          <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
-            <h2 className="text-3xl font-bold text-slate-800 mb-4">Welcome to ReadyReply AI</h2>
-            <p className="text-lg text-slate-600 mb-8 max-w-2xl">
-              Your elite AI communication assistant. Sign in to start drafting professional customer support replies in seconds.
-            </p>
-            <SignInButton mode="modal">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
-                Sign In to Get Started
-              </button>
-            </SignInButton>
-          </div>
-        </Show>
+        </SignedIn>
 
         {/* Simple Footer */}
-        <div className="text-center py-8 text-slate-500 text-sm">
-          <p>© 2026 ReadyReply AI. All rights reserved. | <a href="/privacy.html" className="underline hover:text-slate-800">Privacy Policy</a></p>
+        <div className="text-center pb-4 text-slate-500 text-xs">
+          <p>© 2026 ReadyReply AI.</p>
         </div>
       </div>
     </ClerkProvider>
