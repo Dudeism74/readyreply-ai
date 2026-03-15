@@ -1,6 +1,5 @@
 import { useState } from 'react';
 import { GoogleGenerativeAI } from '@google/generative-ai';
-// Split imports: Provider from the extension package, UI from the react package
 import { ClerkProvider } from '@clerk/chrome-extension';
 import { SignedIn, SignedOut, SignInButton, UserButton } from '@clerk/clerk-react';
 
@@ -28,7 +27,7 @@ export default function App() {
     setGeneratedReply('');
 
     try {
-      const apiKey = process.env.GEMINI_API_KEY as string;
+      const apiKey = (import.meta.env.VITE_GEMINI_API_KEY || '') as string;
       if (!apiKey) {
         setGeneratedReply('Error: GEMINI_API_KEY is missing from your local environment.');
         setIsGenerating(false);
