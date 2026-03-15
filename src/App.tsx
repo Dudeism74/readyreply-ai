@@ -162,9 +162,23 @@ export default function App() {
             </div>
           </div>
         </SignedIn>
+        <SignedOut>
+          <div className="flex flex-col items-center justify-center py-24 px-4 text-center">
+            <h2 className="text-3xl font-bold text-slate-800 mb-4">Welcome to ReadyReply AI</h2>
+            <p className="text-lg text-slate-600 mb-8 max-w-2xl">
+              Your elite AI communication assistant. Sign in to start drafting professional customer support replies in seconds.
+            </p>
+            <SignInButton mode="modal">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg font-semibold transition-colors">
+                Sign In to Get Started
+              </button>
+            </SignInButton>
+          </div>
+        </SignedOut>
+
         {/* Simple Footer */}
         <div className="text-center py-8 text-slate-500 text-sm">
-          <p>© 2026 ReadyReply AI. All rights reserved. | <a href="/privacy" className="hover:text-blue-600 underline">Privacy Policy</a></p>
+          <p>© 2026 ReadyReply AI. All rights reserved. | <a href="/privacy.html" className="underline hover:text-slate-800">Privacy Policy</a></p>
         </div>
       </div>
     </ClerkProvider>
