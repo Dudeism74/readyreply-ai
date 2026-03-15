@@ -62,7 +62,7 @@ export default function App() {
       <div className="bg-slate-50 w-full min-h-screen mx-auto flex flex-col shadow-xl">
 
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-4">
-          <h1 className="text-xl font-extrabold text-slate-900">ReadyReply AI</h1>
+          <h1 className="text-2xl font-extrabold text-slate-900">ReadyReply AI</h1>
           <div className="flex items-center gap-4">
             <Show when="signed-out">
               <SignInButton mode="modal">
@@ -83,14 +83,14 @@ export default function App() {
 
         <Show when="signed-out">
           <div className="flex flex-col items-center justify-center px-6 py-12 text-center flex-grow">
-            <h1 className="text-3xl font-extrabold text-slate-900 mb-4 tracking-tight">
+            <h1 className="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
               Write Perfect Emails in <span className="text-blue-600">Seconds</span>
             </h1>
-            <p className="text-sm text-slate-600 mb-6">
+            <p className="text-xl text-slate-600 mb-8 max-w-2xl">
               Stop wasting time on difficult emails. Our AI copilot learns your business rules and brand voice to draft the perfect response instantly.
             </p>
             <SignInButton mode="modal">
-              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-3 px-6 rounded-xl shadow-lg text-md transition-all">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg text-lg transition-all">
                 Start 7-Day Free Trial
               </button>
             </SignInButton>
@@ -98,7 +98,7 @@ export default function App() {
         </Show>
 
         <Show when="signed-in">
-          <div className="px-4 pb-6 space-y-6 flex-grow">
+          <div className="px-4 pb-6 space-y-6 flex-grow max-w-2xl mx-auto w-full">
             <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-4 space-y-4">
 
               <div className="space-y-2">
@@ -141,8 +141,9 @@ export default function App() {
           </div>
         </Show>
 
-        <div className="text-center pb-4 pt-2 text-slate-500 text-xs">
+        <div className="text-center pb-8 pt-4 text-slate-500 text-sm space-y-2">
           <p>© 2026 ReadyReply AI.</p>
+          <a href="/privacy.html" className="hover:text-blue-600 transition-colors block">Privacy Policy</a>
         </div>
       </div>
     </ClerkProvider>
