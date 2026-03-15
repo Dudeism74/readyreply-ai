@@ -59,7 +59,7 @@ export default function App() {
 
   return (
     <ClerkProvider publishableKey={PUBLISHABLE_KEY}>
-      <div className="bg-slate-50 w-full md:w-[400px] min-h-[550px] mx-auto flex flex-col shadow-xl">
+      <div className="bg-slate-50 w-full min-h-screen mx-auto flex flex-col shadow-xl">
 
         <div className="flex justify-between items-center p-4 bg-white shadow-sm mb-4">
           <h1 className="text-xl font-extrabold text-slate-900">ReadyReply AI</h1>
