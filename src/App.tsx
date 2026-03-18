@@ -77,18 +77,69 @@ function AppContent() {
       </div>
 
       <Show when="signed-out">
-        <div className="flex flex-col items-center justify-center px-6 py-12 text-center flex-grow">
-          <h1 className="text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
-            Write Perfect Emails in <span className="text-blue-600">Seconds</span>
-          </h1>
-          <p className="text-xl text-slate-600 mb-8 max-w-2xl">
-            Stop wasting time on difficult emails. Our AI copilot learns your business rules and brand voice to draft the perfect response instantly.
-          </p>
-          <SignInButton mode="modal">
-            <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-8 rounded-xl shadow-lg text-lg transition-all">
-              Start 7-Day Free Trial
-            </button>
-          </SignInButton>
+        <div className="w-full flex-grow flex flex-col">
+          {/* Section 1: Hero */}
+          <section className="flex flex-col items-center justify-center px-6 py-24 text-center bg-white">
+            <h1 className="text-5xl md:text-6xl font-extrabold text-slate-900 mb-6 tracking-tight max-w-4xl">
+              The Ultimate <span className="text-blue-600">AI Gmail Assistant</span>
+            </h1>
+            <p className="text-xl text-slate-600 mb-10 max-w-2xl mx-auto">
+              ReadyReply AI learns your brand voice and writes the perfect customer support response instantly. Automate customer service emails and scale your support without losing the human touch.
+            </p>
+            <SignInButton mode="modal">
+              <button className="bg-blue-600 hover:bg-blue-700 text-white font-bold py-4 px-10 rounded-xl shadow-xl text-lg transition-transform transform hover:scale-105">
+                Start 7-Day Free Trial
+              </button>
+            </SignInButton>
+          </section>
+
+          {/* Section 2: How It Works */}
+          <section className="py-24 px-6 bg-slate-50">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-center text-slate-900 mb-16">How Our <span className="text-blue-600">Gmail AI Automation</span> Works</h2>
+              <div className="grid md:grid-cols-3 gap-10">
+                <div className="bg-white p-10 rounded-3xl shadow-md text-center transform hover:-translate-y-2 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-inner">1</div>
+                  <h3 className="text-2xl font-bold mb-4 text-slate-800">Define Brand Voice</h3>
+                  <p className="text-slate-600 leading-relaxed">Provide your company knowledge and desired tone. The AI learns exactly how your business communicates.</p>
+                </div>
+                <div className="bg-white p-10 rounded-3xl shadow-md text-center transform hover:-translate-y-2 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-inner">2</div>
+                  <h3 className="text-2xl font-bold mb-4 text-slate-800">Paste the Thread</h3>
+                  <p className="text-slate-600 leading-relaxed">Simply drop in the difficult support email or question. Our AI reads the full context instantly.</p>
+                </div>
+                <div className="bg-white p-10 rounded-3xl shadow-md text-center transform hover:-translate-y-2 transition-transform duration-300">
+                  <div className="w-16 h-16 bg-blue-100 text-blue-600 rounded-full flex items-center justify-center text-2xl font-black mx-auto mb-6 shadow-inner">3</div>
+                  <h3 className="text-2xl font-bold mb-4 text-slate-800">Generate Reply</h3>
+                  <p className="text-slate-600 leading-relaxed">Click a button to automate customer service emails with an accurate, perfectly-toned response ready to send.</p>
+                </div>
+              </div>
+            </div>
+          </section>
+
+          {/* Section 3: Features */}
+          <section className="py-24 px-6 bg-white border-t border-slate-100">
+            <div className="max-w-6xl mx-auto">
+              <h2 className="text-3xl md:text-4xl font-extrabold text-center text-slate-900 mb-16">Powerful Features for Seamless Support</h2>
+              <div className="grid md:grid-cols-3 gap-12">
+                <div className="flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl">
+                  <div className="w-20 h-20 bg-green-100 text-green-600 rounded-2xl flex items-center justify-center text-4xl mb-6 shadow-sm">⚡</div>
+                  <h3 className="text-2xl font-bold mb-3 text-slate-800">Lightning Speed</h3>
+                  <p className="text-slate-600 leading-relaxed">Draft complex support replies in seconds, dramatically reducing your average handle time to zero.</p>
+                </div>
+                <div className="flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl">
+                  <div className="w-20 h-20 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center text-4xl mb-6 shadow-sm">🎭</div>
+                  <h3 className="text-2xl font-bold mb-3 text-slate-800">Dynamic Tone Control</h3>
+                  <p className="text-slate-600 leading-relaxed">Switch from "Professional" to "Friendly & Warm" instantly to perfectly match the customer's mood.</p>
+                </div>
+                <div className="flex flex-col items-center text-center p-6 bg-slate-50 rounded-2xl">
+                  <div className="w-20 h-20 bg-blue-100 text-blue-700 rounded-2xl flex items-center justify-center text-4xl mb-6 shadow-sm">🔒</div>
+                  <h3 className="text-2xl font-bold mb-3 text-slate-800">API Security</h3>
+                  <p className="text-slate-600 leading-relaxed">Enterprise-grade API security ensures your data and Stripe payments are completely protected under Clerk authentication.</p>
+                </div>
+              </div>
+            </div>
+          </section>
         </div>
       </Show>
 
