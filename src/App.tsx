@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { ClerkProvider, Show, SignInButton, UserButton, useAuth } from '@clerk/react';
-
+declare const chrome: any;
 const PUBLISHABLE_KEY = "pk_live_Y2xlcmsucmVhZHlyZXBseWFpLmNvbSQ";
 const STRIPE_LINK = "https://buy.stripe.com/6oU4gr6iR3QVaSe1Rg1B600";
 
 function AppContent() {
-  const { getToken } = useAuth();
+  const { getToken, isSignedIn } = useAuth();
   const [companyKnowledge, setCompanyKnowledge] = useState('');
   const [brandVoice, setBrandVoice] = useState('');
   const [emailThread, setEmailThread] = useState('');
@@ -14,6 +14,45 @@ function AppContent() {
   const [generatedReply, setGeneratedReply] = useState('');
   const [isGenerating, setIsGenerating] = useState(false);
 
+  // --- NEW: Sync Clerk JWT with Chrome Extension ---
+  useEffect(() => {
+    const syncTokenWithExtension = async () => {
+      // Only attempt to sync if the user is actively signed in
+      if (isSignedIn) {
+        try {
+          const token = await getToken();
+          // REPLACE THIS WITH YOUR ACTUAL CHROME EXTENSION ID
+          const EXTENSION_ID = 'kmlfjibfnimopokgdokilgakajfhebfm';
+
+          if ((window as any).chrome && (window as any).chrome.runtime && token) {
+            chrome.runtime.sendMessage(EXTENSION_ID, {
+              action: "storeClerkToken",
+              token: token
+            }, (response) => {
+              if (chrome.runtime.lastError) {
+                // Not a fatal error, extension might not be reachable or is missing externally_connectable
+                console.debug("Extension not reachable yet:", chrome.runtime.lastError);
+              } else {
+                console.log("Successfully synced Clerk token to extension!");
+              }
+            });
+          }
+        } catch (error) {
+          console.error("Error grabbing token for extension sync:", error);
+        }
+      }
+    };
+
+    // Sync immediately on sign-in or reload
+    syncTokenWithExtension();
+
+    // Set an interval to re-sync the token every 5 minutes so it doesn't expire
+    const intervalId = setInterval(syncTokenWithExtension, 1000 * 60 * 5);
+
+    return () => clearInterval(intervalId);
+  }, [getToken, isSignedIn]);
+  // -----------------------------------------------
+
   const handleGenerate = async () => {
     if (!emailThread) return alert("Please paste an email thread first!");
     setIsGenerating(true);
@@ -21,7 +60,7 @@ function AppContent() {
 
     try {
       const token = await getToken();
-      
+
       const response = await fetch('/api/generate', {
         method: 'POST',
         headers: {
@@ -36,7 +75,7 @@ function AppContent() {
           brandVoice
         })
       });
-      
+
       const data = await response.json();
 
       if (!response.ok) {
