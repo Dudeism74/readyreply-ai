@@ -54,7 +54,7 @@ export default async function handler(req: Request, res: Response) {
     }
 
     // Extract dynamic prompt parameters with defaults
-    const { emailText, tone, goal } = req.body;
+    const { emailText, tone, goal, companyKnowledge, brandVoice } = req.body;
 
     if (!emailText) {
       return res.status(400).json({ success: false, error: "Missing emailText in request body" });
@@ -77,7 +77,17 @@ export default async function handler(req: Request, res: Response) {
     const promptTone = tone || "professional";
     const promptGoal = goal || "resolve the customer's issue";
 
-    const prompt = `Please draft a ${promptTone} response to the following customer message. Your goal is to ${promptGoal}:\n\n${emailText}`;
+    let prompt = `You are an elite, highly-paid communication and customer support assistant.\n`;
+    
+    if (companyKnowledge) {
+      prompt += `COMPANY KNOWLEDGE & POLICIES: ${companyKnowledge}\n`;
+    }
+    
+    if (brandVoice) {
+      prompt += `BRAND VOICE & WRITING STYLE: ${brandVoice}\n`;
+    }
+
+    prompt += `TASK: Write a response to the following customer message.\nGoal of the response: ${promptGoal}\nDesired Tone: ${promptTone}\nCRITICAL INSTRUCTION: Analyze the email thread to find the customer's name. Always address them by their name in the greeting (e.g., "Hi [Name],"). If absolutely no name can be found, use a polite, professional greeting. Do not include any intro or outro commentary.\nCUSTOMER MESSAGE:\n\n${emailText}`;
 
     const result = await model.generateContent(prompt);
     const generatedText = result.response.text();
