@@ -47,7 +47,9 @@ export default async function handler(req: Request, res: Response) {
     const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
     const user = await clerkClient.users.getUser(userId);
 
-    if (user.publicMetadata.stripeSubscriptionStatus !== 'active') {
+    const isAdmin = user.emailAddresses.some(email => email.emailAddress === "trustedessentialsgpt@gmail.com");
+
+    if (!isAdmin && user.publicMetadata.stripeSubscriptionStatus !== 'active') {
       return res.status(403).json({ error: "Forbidden. Please upgrade to an active Stripe subscription to use this feature." });
     }
 
