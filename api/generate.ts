@@ -1,5 +1,5 @@
 import { GoogleGenerativeAI } from "@google/generative-ai";
-import { verifyToken } from "@clerk/backend";
+import { createClerkClient, verifyToken } from "@clerk/backend";
 import type { Request, Response } from "express";
 
 export default async function handler(req: Request, res: Response) {
@@ -30,8 +30,9 @@ export default async function handler(req: Request, res: Response) {
       return res.status(401).json({ error: "Unauthorized. Please log in to readyreplyai.com to use the extension." });
     }
 
+    let verifiedToken;
     try {
-      await verifyToken(token, {
+      verifiedToken = await verifyToken(token, {
         secretKey: process.env.CLERK_SECRET_KEY,
       });
     } catch (error) {
@@ -40,7 +41,18 @@ export default async function handler(req: Request, res: Response) {
       return res.status(401).json({ error: "Unauthorized. Please log in to readyreplyai.com to use the extension." });
     }
 
-    const { emailText } = req.body;
+    const userId = verifiedToken.sub;
+    
+    // Retrieve the user from Clerk to check their Stripe subscription status
+    const clerkClient = createClerkClient({ secretKey: process.env.CLERK_SECRET_KEY });
+    const user = await clerkClient.users.getUser(userId);
+
+    if (user.publicMetadata.stripeSubscriptionStatus !== 'active') {
+      return res.status(403).json({ error: "Forbidden. Please upgrade to an active Stripe subscription to use this feature." });
+    }
+
+    // Extract dynamic prompt parameters with defaults
+    const { emailText, tone, goal } = req.body;
 
     if (!emailText) {
       return res.status(400).json({ success: false, error: "Missing emailText in request body" });
@@ -60,7 +72,10 @@ export default async function handler(req: Request, res: Response) {
       systemInstruction: "You are an elite customer support assistant. You must always address the customer by their name if provided within the text, and maintain a highly professional, helpful, and empathetic tone."
     });
 
-    const prompt = `Please draft a professional, helpful, and empathetic response to the following customer message:\n\n${emailText}`;
+    const promptTone = tone || "professional";
+    const promptGoal = goal || "resolve the customer's issue";
+
+    const prompt = `Please draft a ${promptTone} response to the following customer message. Your goal is to ${promptGoal}:\n\n${emailText}`;
 
     const result = await model.generateContent(prompt);
     const generatedText = result.response.text();
