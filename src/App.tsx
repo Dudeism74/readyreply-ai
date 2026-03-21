@@ -184,6 +184,18 @@ function AppContent() {
 
       <Show when="signed-in">
         <div className="px-4 pb-6 space-y-6 flex-grow max-w-2xl mx-auto w-full">
+          
+          <a
+            href="https://chromewebstore.google.com/detail/readyreply-ai/ocapnhpnpnbfbmfjaoeejdjoefednigd"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="block w-full bg-gradient-to-r from-blue-600 to-indigo-600 hover:from-blue-700 hover:to-indigo-700 text-white font-bold py-4 px-6 rounded-xl shadow-lg transition-transform transform hover:-translate-y-1 text-center"
+          >
+            <span className="flex items-center justify-center gap-2 text-lg">
+              ✨ Step 2: Install the Chrome Extension
+            </span>
+          </a>
+
           <div className="bg-white shadow-sm ring-1 ring-slate-200 rounded-xl p-4 space-y-4">
 
             <div className="space-y-2">
