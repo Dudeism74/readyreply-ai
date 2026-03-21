@@ -22,7 +22,7 @@ function AppContent() {
         try {
           const token = await getToken();
           // REPLACE THIS WITH YOUR ACTUAL CHROME EXTENSION ID
-          const EXTENSION_ID = 'kmlfjibfnimopokgdokilgakajfhebfm';
+          const EXTENSION_ID = 'ocapnhpnpnbfbmfjaoeejdjoefednigd';
 
           if ((window as any).chrome && (window as any).chrome.runtime && token) {
             chrome.runtime.sendMessage(EXTENSION_ID, {
